@@ -21,4 +21,5 @@ public class WechatAutoConfiguration {
 //	public WechatService wechatUtils() {
 //		return new WechatServiceImpl();
 //	}
+
 }
