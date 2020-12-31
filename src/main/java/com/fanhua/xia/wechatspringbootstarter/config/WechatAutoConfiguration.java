@@ -1,22 +1,16 @@
 package com.fanhua.xia.wechatspringbootstarter.config;
 
+import com.fanhua.xia.wechatspringbootstarter.WeChatUtils;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Bean;
 
 /**
  * @author yang [yiixuan@163.com]
  */
-@Configuration
 @EnableConfigurationProperties(WechatConfig.class)
 public class WechatAutoConfiguration {
-	/**
-	 * 初始化自定义Starter的Bean
-	 *
-	 * @return
-	 */
-//	@Bean
-//	public WechatService wechatUtils() {
-//		return new WechatServiceImpl();
-//	}
-
+	@Bean
+	public WeChatUtils wechatUtils(WechatConfig wechatConfig) {
+		return new WeChatUtils(wechatConfig);
+	}
 }

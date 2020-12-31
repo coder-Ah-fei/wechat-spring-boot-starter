@@ -8,12 +8,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,19 +28,13 @@ import java.util.Map;
  *
  * @author yang [yiixuan@163.com]
  */
-@Component
 public class WeChatUtils {
 	private static final Logger LOGGER = LoggerFactory.getLogger(WechatConfig.class);
-	@Autowired
-	private WechatConfig wechatConfig;
+	private static WechatConfig wechatConfig;
 	
-	private static WechatConfig staticWechatConfig;
-	
-	@PostConstruct
-	public void init() {
-		staticWechatConfig = wechatConfig;
+	public WeChatUtils(WechatConfig wechatConfig) {
+		WeChatUtils.wechatConfig = wechatConfig;
 	}
-	
 	
 	/**
 	 * 根据code获取网页授权的access_token
@@ -54,7 +45,7 @@ public class WeChatUtils {
 		AuthToken authToken = null;
 		StringBuilder json = new StringBuilder();
 		try {
-			String urlStr = staticWechatConfig.getUrl().getWebAccessToken() + "appid=" + staticWechatConfig.getConfig().getAppid() + "&secret=" + staticWechatConfig.getConfig().getAppsecret() + "&code=" + code + "&grant_type=authorization_code";
+			String urlStr = wechatConfig.getUrl().getWebAccessToken() + "appid=" + wechatConfig.getConfig().getAppid() + "&secret=" + wechatConfig.getConfig().getAppsecret() + "&code=" + code + "&grant_type=authorization_code";
 			LOGGER.info("-------------------------------------------------------------------------------------");
 			LOGGER.info("获取网页授权的access_token的url【" + urlStr + "】");
 			URL url = new URL(urlStr);
@@ -86,7 +77,7 @@ public class WeChatUtils {
 		UserInfoDto userInfoDto = null;
 		StringBuilder json = new StringBuilder();
 		try {
-			String urlStr = staticWechatConfig.getUrl().getUserInfo() + "?access_token=" + accessToken.getAccess_token() + "&openid=" + accessToken.getOpenid();
+			String urlStr = wechatConfig.getUrl().getUserInfo() + "?access_token=" + accessToken.getAccess_token() + "&openid=" + accessToken.getOpenid();
 			LOGGER.info("-------------------------------------------------------------------------------------");
 			LOGGER.info("根据微信网页授权的access_token获取用户的基本信息【" + urlStr + "】");
 			URL url = new URL(urlStr);
@@ -117,7 +108,7 @@ public class WeChatUtils {
 	 */
 	public synchronized static AccessToken getBaseAccessToken() {
 		AccessToken accessToken = null;
-		String urlStr = staticWechatConfig.getUrl().getAccessToken() + "appid=" + staticWechatConfig.getConfig().getAppid() + "&secret=" + staticWechatConfig.getConfig().getAppsecret();
+		String urlStr = wechatConfig.getUrl().getAccessToken() + "appid=" + wechatConfig.getConfig().getAppid() + "&secret=" + wechatConfig.getConfig().getAppsecret();
 		StringBuilder stringBuilder = httpsGet(urlStr);
 		LOGGER.info("从腾讯服务器中获取的基础accessToken是【" + stringBuilder.toString() + "】");
 		//将json字符串转成javaBean
@@ -142,7 +133,7 @@ public class WeChatUtils {
 		if (StringUtils.hasText(accessToken)) {
 			return findUserListDto;
 		}
-		String urlStr = staticWechatConfig.getUrl().getUserList() + "access_token=" + accessToken + "&next_openid=" + openid;
+		String urlStr = wechatConfig.getUrl().getUserList() + "access_token=" + accessToken + "&next_openid=" + openid;
 		StringBuilder stringBuilder = httpsGet(urlStr);
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
@@ -185,7 +176,7 @@ public class WeChatUtils {
 	 */
 	public static UserInfoListDto findUserInfoList(String params, String accessToken) {
 		UserInfoListDto userInfoListDto = null;
-		String url = staticWechatConfig.getUrl().getUserInfoBatchget() + accessToken;
+		String url = wechatConfig.getUrl().getUserInfoBatchget() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -228,7 +219,7 @@ public class WeChatUtils {
 	 */
 	public static MaterialDto materialAddNews(String params, String accessToken) {
 		MaterialDto materialDto = new MaterialDto();
-		String url = staticWechatConfig.getUrl().getMaterialAddNews() + accessToken;
+		String url = wechatConfig.getUrl().getMaterialAddNews() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -245,7 +236,7 @@ public class WeChatUtils {
 	 */
 	public static Map createMenu(String params, String accessToken) {
 		Map map = new HashMap();
-		String url = staticWechatConfig.getUrl().getCreateMenu() + accessToken;
+		String url = wechatConfig.getUrl().getCreateMenu() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
 			LOGGER.info("增加公众号菜单请求结果：【" + new String(post) + "】");
@@ -267,7 +258,7 @@ public class WeChatUtils {
 	public static UserTagDto createTag(String tagName, String accessToken) {
 		UserTagDto userTagDto = null;
 		String params = "{\"tag\":{\"name\":\"" + tagName + "\"}} ";
-		String url = staticWechatConfig.getUrl().getTagsCreate() + accessToken;
+		String url = wechatConfig.getUrl().getTagsCreate() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -286,7 +277,7 @@ public class WeChatUtils {
 	public static UserTagDto updateTag(int wechatTagId, String tagName, String accessToken) {
 		UserTagDto userTagDto = null;
 		String params = "{\"tag\":{\"id\":" + wechatTagId + ",\"name\":\"" + tagName + "\"}}";
-		String url = staticWechatConfig.getUrl().getTagsUpdate() + accessToken;
+		String url = wechatConfig.getUrl().getTagsUpdate() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -303,7 +294,7 @@ public class WeChatUtils {
 	public static BaseDto batchtagging(BatchTaggingSendData batchTaggingSendData, String accessToken) {
 		BaseDto baseDto = null;
 		String params = JackJsonUtils.toJson(batchTaggingSendData);
-		String url = staticWechatConfig.getUrl().getTagsBatchtagging() + accessToken;
+		String url = wechatConfig.getUrl().getTagsBatchtagging() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
 			ObjectMapper objectMapper = new ObjectMapper();
