@@ -4,6 +4,8 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 
 /**
  * 请求微信支付传参的模型
+ *
+ * @author yang [yiixuan@163.com]
  */
 public class WxPaySendData {
 	

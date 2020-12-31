@@ -1,5 +1,8 @@
 package com.fanhua.xia.wechatspringbootstarter.model;
 
+/**
+ * @author yang [yiixuan@163.com]
+ */
 public class UserTagDto {
 	
 	/**

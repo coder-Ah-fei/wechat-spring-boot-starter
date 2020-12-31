@@ -5,6 +5,8 @@ import java.util.List;
 
 /**
  * 上传图文消息需要的参数
+ *
+ * @author yang [yiixuan@163.com]
  */
 public class MaterialAddNewsSendData {
 	

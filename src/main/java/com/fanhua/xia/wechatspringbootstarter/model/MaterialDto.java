@@ -4,6 +4,8 @@ import java.util.List;
 
 /**
  * 接收微信素材相关请求的返回参数的model
+ *
+ * @author yang [yiixuan@163.com]
  */
 public class MaterialDto {
 	

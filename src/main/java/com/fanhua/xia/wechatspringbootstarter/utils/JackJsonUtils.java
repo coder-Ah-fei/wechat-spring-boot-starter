@@ -2,6 +2,9 @@ package com.fanhua.xia.wechatspringbootstarter.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * @author yang [yiixuan@163.com]
+ */
 public class JackJsonUtils {
 	static ObjectMapper objectMapper;
 	

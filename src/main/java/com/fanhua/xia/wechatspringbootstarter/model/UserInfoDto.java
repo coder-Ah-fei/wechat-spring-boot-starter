@@ -3,7 +3,7 @@ package com.fanhua.xia.wechatspringbootstarter.model;
 import java.util.List;
 
 /**
- *
+ * @author yang [yiixuan@163.com]
  */
 public class UserInfoDto {
 	/**

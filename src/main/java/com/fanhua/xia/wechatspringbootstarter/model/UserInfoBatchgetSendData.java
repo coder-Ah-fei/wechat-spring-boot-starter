@@ -4,6 +4,8 @@ import java.util.List;
 
 /**
  * 批量获取用户基本信息，请求的参数model
+ *
+ * @author yang [yiixuan@163.com]
  */
 public class UserInfoBatchgetSendData {
 	

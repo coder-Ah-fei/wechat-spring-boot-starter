@@ -1,10 +1,7 @@
 package com.fanhua.xia.wechatspringbootstarter.exception;
 
 /**
- * 描述：接收前台
- *
- * @author yang
- * @date 2020-12-30
+ * @author yang [yiixuan@163.com]
  */
 public class WechatException extends Exception {
 	/*无参构造函数*/

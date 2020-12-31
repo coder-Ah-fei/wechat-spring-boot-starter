@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * 获取access_token的接收模板
  *
- * @author yang
+ * @author yang [yiixuan@163.com]
  */
 public class AccessToken implements Serializable {
 	

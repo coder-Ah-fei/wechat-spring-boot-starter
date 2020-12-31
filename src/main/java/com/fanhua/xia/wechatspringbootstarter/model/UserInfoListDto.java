@@ -2,6 +2,9 @@ package com.fanhua.xia.wechatspringbootstarter.model;
 
 import java.util.List;
 
+/**
+ * @author yang [yiixuan@163.com]
+ */
 public class UserInfoListDto {
 	
 	private List<UserInfoDto> user_info_list;

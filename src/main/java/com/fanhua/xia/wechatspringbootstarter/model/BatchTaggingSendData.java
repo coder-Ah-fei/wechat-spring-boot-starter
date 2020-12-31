@@ -5,8 +5,7 @@ import java.util.List;
 /**
  * 描述：给用户批量绑定标签发送的参数
  *
- * @author Administrator
- * @date 2020-03-11
+ * @author yang [yiixuan@163.com]
  */
 public class BatchTaggingSendData {
 	

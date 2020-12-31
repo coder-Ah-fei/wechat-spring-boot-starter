@@ -1,13 +1,8 @@
 package com.fanhua.xia.wechatspringbootstarter.model;
 
 /**
- * 描述：
- *
- * @author Administrator
- * @date 2020-03-11
+ * @author yang [yiixuan@163.com]
  */
-
-
 public class BaseDto {
 	
 	

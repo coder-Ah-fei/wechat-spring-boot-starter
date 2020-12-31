@@ -6,8 +6,7 @@ import java.util.List;
  * WechatMenuAddSendData
  * 公众号增加菜单，发送的参数模型
  *
- * @author yangy
- * @date 2020-02-22
+ * @author yang [yiixuan@163.com]
  */
 public class WechatMenuAddSendData {
 	

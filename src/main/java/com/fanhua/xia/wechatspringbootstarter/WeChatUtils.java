@@ -8,9 +8,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -26,10 +29,21 @@ import java.util.Map;
 /**
  * 微信工具类
  *
- * @author
+ * @author yang [yiixuan@163.com]
  */
+@Component
 public class WeChatUtils {
-	private static final Logger log = LoggerFactory.getLogger(WechatConfig.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(WechatConfig.class);
+	@Autowired
+	private WechatConfig wechatConfig;
+	
+	private static WechatConfig staticWechatConfig;
+	
+	@PostConstruct
+	public void init() {
+		staticWechatConfig = wechatConfig;
+	}
+	
 	
 	/**
 	 * 根据code获取网页授权的access_token
@@ -40,9 +54,9 @@ public class WeChatUtils {
 		AuthToken authToken = null;
 		StringBuilder json = new StringBuilder();
 		try {
-			String urlStr = WechatConfig.Url.webAccessToken + "appid=" + WechatConfig.Config.appid + "&secret=" + WechatConfig.Config.appsecret + "&code=" + code + "&grant_type=authorization_code";
-			log.info("-------------------------------------------------------------------------------------");
-			log.info("获取网页授权的access_token的url【" + urlStr + "】");
+			String urlStr = staticWechatConfig.getUrl().getWebAccessToken() + "appid=" + staticWechatConfig.getConfig().getAppid() + "&secret=" + staticWechatConfig.getConfig().getAppsecret() + "&code=" + code + "&grant_type=authorization_code";
+			LOGGER.info("-------------------------------------------------------------------------------------");
+			LOGGER.info("获取网页授权的access_token的url【" + urlStr + "】");
 			URL url = new URL(urlStr);
 			URLConnection uc = url.openConnection();
 			BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
@@ -51,13 +65,13 @@ public class WeChatUtils {
 				json.append(inputLine);
 			}
 			in.close();
-			log.info("-------------------------------------------------------------------------------------");
-			log.info("获取网页授权的access_token是【" + json.toString() + "】");
+			LOGGER.info("-------------------------------------------------------------------------------------");
+			LOGGER.info("获取网页授权的access_token是【" + json.toString() + "】");
 			//将json字符串转成javaBean
 			ObjectMapper objectMapper = new ObjectMapper();
 			authToken = objectMapper.readValue(json.toString(), AuthToken.class);
 		} catch (Exception e) {
-			log.error("微信工具类:根据授权code获取access_token异常");
+			LOGGER.error("微信工具类:根据授权code获取access_token异常");
 			e.printStackTrace();
 		}
 		return authToken;
@@ -72,9 +86,9 @@ public class WeChatUtils {
 		UserInfoDto userInfoDto = null;
 		StringBuilder json = new StringBuilder();
 		try {
-			String urlStr = WechatConfig.Url.userInfo + "?access_token=" + accessToken.getAccess_token() + "&openid=" + accessToken.getOpenid();
-			log.info("-------------------------------------------------------------------------------------");
-			log.info("根据微信网页授权的access_token获取用户的基本信息【" + urlStr + "】");
+			String urlStr = staticWechatConfig.getUrl().getUserInfo() + "?access_token=" + accessToken.getAccess_token() + "&openid=" + accessToken.getOpenid();
+			LOGGER.info("-------------------------------------------------------------------------------------");
+			LOGGER.info("根据微信网页授权的access_token获取用户的基本信息【" + urlStr + "】");
 			URL url = new URL(urlStr);
 			URLConnection uc = url.openConnection();
 			BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
@@ -83,13 +97,13 @@ public class WeChatUtils {
 				json.append(inputLine);
 			}
 			in.close();
-			log.info("-------------------------------------------------------------------------------------");
-			log.info("获取用户的基本信息是【" + json.toString() + "】");
+			LOGGER.info("-------------------------------------------------------------------------------------");
+			LOGGER.info("获取用户的基本信息是【" + json.toString() + "】");
 			//将json字符串转成javaBean
 			ObjectMapper objectMapper = new ObjectMapper();
 			userInfoDto = objectMapper.readValue(json.toString(), UserInfoDto.class);
 		} catch (Exception e) {
-			log.error("微信工具类:根据微信网页授权的access_token获取用户的基本信息异常");
+			LOGGER.error("微信工具类:根据微信网页授权的access_token获取用户的基本信息异常");
 			e.printStackTrace();
 		}
 		return userInfoDto;
@@ -103,15 +117,15 @@ public class WeChatUtils {
 	 */
 	public synchronized static AccessToken getBaseAccessToken() {
 		AccessToken accessToken = null;
-		String urlStr = WechatConfig.Url.accessToken + "appid=" + WechatConfig.Config.appid + "&secret=" + WechatConfig.Config.appsecret;
+		String urlStr = staticWechatConfig.getUrl().getAccessToken() + "appid=" + staticWechatConfig.getConfig().getAppid() + "&secret=" + staticWechatConfig.getConfig().getAppsecret();
 		StringBuilder stringBuilder = httpsGet(urlStr);
-		log.info("从腾讯服务器中获取的基础accessToken是【" + stringBuilder.toString() + "】");
+		LOGGER.info("从腾讯服务器中获取的基础accessToken是【" + stringBuilder.toString() + "】");
 		//将json字符串转成javaBean
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
 			accessToken = objectMapper.readValue(stringBuilder.toString(), AccessToken.class);
 		} catch (IOException e) {
-			log.error("json转对象发生异常" + e.getMessage());
+			LOGGER.error("json转对象发生异常" + e.getMessage());
 		}
 		return accessToken;
 	}
@@ -128,7 +142,7 @@ public class WeChatUtils {
 		if (StringUtils.hasText(accessToken)) {
 			return findUserListDto;
 		}
-		String urlStr = WechatConfig.Url.userList + "access_token=" + accessToken + "&next_openid=" + openid;
+		String urlStr = staticWechatConfig.getUrl().getUserList() + "access_token=" + accessToken + "&next_openid=" + openid;
 		StringBuilder stringBuilder = httpsGet(urlStr);
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
@@ -171,14 +185,14 @@ public class WeChatUtils {
 	 */
 	public static UserInfoListDto findUserInfoList(String params, String accessToken) {
 		UserInfoListDto userInfoListDto = null;
-		String url = WechatConfig.Url.userInfoBatchget + accessToken;
+		String url = staticWechatConfig.getUrl().getUserInfoBatchget() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
 			ObjectMapper objectMapper = new ObjectMapper();
 			userInfoListDto = objectMapper.readValue(new String(post), UserInfoListDto.class);
 			return userInfoListDto;
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOGGER.error(e.getMessage());
 		}
 		return null;
 	}
@@ -214,7 +228,7 @@ public class WeChatUtils {
 	 */
 	public static MaterialDto materialAddNews(String params, String accessToken) {
 		MaterialDto materialDto = new MaterialDto();
-		String url = WechatConfig.Url.materialAddNews + accessToken;
+		String url = staticWechatConfig.getUrl().getMaterialAddNews() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -231,10 +245,10 @@ public class WeChatUtils {
 	 */
 	public static Map createMenu(String params, String accessToken) {
 		Map map = new HashMap();
-		String url = WechatConfig.Url.createMenu + accessToken;
+		String url = staticWechatConfig.getUrl().getCreateMenu() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
-			log.info("增加公众号菜单请求结果：【" + new String(post) + "】");
+			LOGGER.info("增加公众号菜单请求结果：【" + new String(post) + "】");
 			ObjectMapper objectMapper = new ObjectMapper();
 			map = objectMapper.readValue(new String(post), Map.class);
 		} catch (Exception e) {
@@ -253,12 +267,12 @@ public class WeChatUtils {
 	public static UserTagDto createTag(String tagName, String accessToken) {
 		UserTagDto userTagDto = null;
 		String params = "{\"tag\":{\"name\":\"" + tagName + "\"}} ";
-		String url = WechatConfig.Url.tagsCreate + accessToken;
+		String url = staticWechatConfig.getUrl().getTagsCreate() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
 			ObjectMapper objectMapper = new ObjectMapper();
 			userTagDto = objectMapper.readValue(new String(post), UserTagDto.class);
-			log.info("发送和客服消息的请求结果：【" + new String(post) + "】");
+			LOGGER.info("发送和客服消息的请求结果：【" + new String(post) + "】");
 		} catch (Exception e) {
 		}
 		return userTagDto;
@@ -272,12 +286,12 @@ public class WeChatUtils {
 	public static UserTagDto updateTag(int wechatTagId, String tagName, String accessToken) {
 		UserTagDto userTagDto = null;
 		String params = "{\"tag\":{\"id\":" + wechatTagId + ",\"name\":\"" + tagName + "\"}}";
-		String url = WechatConfig.Url.tagsCreate + accessToken;
+		String url = staticWechatConfig.getUrl().getTagsUpdate() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
 			ObjectMapper objectMapper = new ObjectMapper();
 			userTagDto = objectMapper.readValue(new String(post), UserTagDto.class);
-			log.info("请求结果：【" + new String(post) + "】");
+			LOGGER.info("请求结果：【" + new String(post) + "】");
 		} catch (Exception e) {
 		}
 		return userTagDto;
@@ -289,12 +303,12 @@ public class WeChatUtils {
 	public static BaseDto batchtagging(BatchTaggingSendData batchTaggingSendData, String accessToken) {
 		BaseDto baseDto = null;
 		String params = JackJsonUtils.toJson(batchTaggingSendData);
-		String url = WechatConfig.Url.tagsBatchtagging + accessToken;
+		String url = staticWechatConfig.getUrl().getTagsBatchtagging() + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
 			ObjectMapper objectMapper = new ObjectMapper();
 			baseDto = objectMapper.readValue(new String(post), BaseDto.class);
-			log.info("批量为用户打标签：【" + new String(post) + "】");
+			LOGGER.info("批量为用户打标签：【" + new String(post) + "】");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -316,7 +330,7 @@ public class WeChatUtils {
 		String url = "https://api.weixin.qq.com/cgi-bin/message/mass/preview?access_token=" + accessToken;
 		try {
 			byte[] post = HttpsUtil.post(url, params, "UTF-8");
-			log.info("发送和客服消息的请求结果：【" + new String(post) + "】");
+			LOGGER.info("发送和客服消息的请求结果：【" + new String(post) + "】");
 		} catch (Exception e) {
 		}
 		
@@ -348,7 +362,7 @@ public class WeChatUtils {
 //			byte[] post = HttpsUtil.post(url, StringUtils.paseObjToString(kfMessageSendData), "UTF-8");
 //			Gson gson = new Gson();
 //			map = gson.fromJson(new String(post), Map.class);
-//			log.info("发送和客服消息的请求结果：【" + StringUtils.paseObjToString(map) + "】");
+//			LOGGER.info("发送和客服消息的请求结果：【" + StringUtils.paseObjToString(map) + "】");
 //		} catch (Exception e) {
 //			map.put("errcode", 1);
 //			map.put("errmsg", "请求异常");
@@ -377,13 +391,13 @@ public class WeChatUtils {
 				json.append(inputLine);
 			}
 		} catch (Exception e) {
-			log.error("https协议的get请求发生异常");
+			LOGGER.error("https协议的get请求发生异常");
 			e.printStackTrace();
 		} finally {
 			try {
 				in.close();
 			} catch (Exception e) {
-				log.error("关闭BufferedReader时发生异常");
+				LOGGER.error("关闭BufferedReader时发生异常");
 				e.printStackTrace();
 			}
 		}

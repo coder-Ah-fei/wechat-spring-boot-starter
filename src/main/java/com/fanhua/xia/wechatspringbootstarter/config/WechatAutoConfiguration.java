@@ -4,10 +4,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 描述：接收前台
- *
- * @author yang
- * @date 2020-12-30
+ * @author yang [yiixuan@163.com]
  */
 @Configuration
 @EnableConfigurationProperties(WechatConfig.class)

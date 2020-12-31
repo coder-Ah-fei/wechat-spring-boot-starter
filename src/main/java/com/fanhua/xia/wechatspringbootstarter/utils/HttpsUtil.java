@@ -15,6 +15,8 @@ import java.security.cert.X509Certificate;
 
 /**
  * 用户发送ssl认证的https请求
+ *
+ * @author yang [yiixuan@163.com]
  */
 public class HttpsUtil {
 	

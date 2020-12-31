@@ -4,6 +4,8 @@ import java.util.List;
 
 /**
  * 接收获取公众号关注用户的数据模型
+ *
+ * @author yang [yiixuan@163.com]
  */
 public class FindUserListDto {
 	

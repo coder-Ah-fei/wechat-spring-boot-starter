@@ -3,6 +3,9 @@ package com.fanhua.xia.wechatspringbootstarter.model;
 
 import java.io.Serializable;
 
+/**
+ * @author yang [yiixuan@163.com]
+ */
 public class AuthToken implements Serializable {
 	
 	/**
