@@ -189,6 +189,31 @@ public class WeChatUtils {
 	}
 	
 	/**
+	 * 生成二维码
+	 *
+	 * @param createQrcodeSendData 请求参数
+	 * @param accessToken          基础的accessToken
+	 * @return
+	 */
+	public static CreateQrcodeDto createQrcode(CreateQrcodeSendData createQrcodeSendData, String accessToken) {
+		
+		String params = JackJsonUtils.toJson(createQrcodeSendData);
+		
+		CreateQrcodeDto createQrcodeDto = null;
+		String url = wechatConfig.getUrl().getCreateQrcode() + accessToken;
+		try {
+			byte[] post = HttpsUtil.post(url, params, "UTF-8");
+			ObjectMapper objectMapper = new ObjectMapper();
+			createQrcodeDto = objectMapper.readValue(new String(post), CreateQrcodeDto.class);
+			return createQrcodeDto;
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return null;
+	}
+	
+	
+	/**
 	 * 可以上传除了图文以外的永久素材
 	 * 和临时素材
 	 * 和图文消息内容里面的图片

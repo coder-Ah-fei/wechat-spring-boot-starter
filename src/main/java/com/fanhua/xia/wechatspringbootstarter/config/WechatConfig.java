@@ -61,6 +61,11 @@ public class WechatConfig {
 		 * 批量获取用户基本信息
 		 */
 		private String sendKfMessage = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=";
+		
+		/**
+		 * 生成二维码
+		 */
+		private String createQrcode = "https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=";
 		/**
 		 * 新增除了（图文类型）之外的其他类型的永久素材
 		 */
@@ -89,6 +94,15 @@ public class WechatConfig {
 		 * 批量为用户打标签
 		 */
 		private String tagsBatchtagging = "https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=";
+		
+		public String getCreateQrcode() {
+			return createQrcode;
+		}
+		
+		public Url setCreateQrcode(String createQrcode) {
+			this.createQrcode = createQrcode;
+			return this;
+		}
 		
 		public String getCode() {
 			return code;
