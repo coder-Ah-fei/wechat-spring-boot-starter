@@ -48,9 +48,10 @@ public class HttpsUtil {
 	 * get方式请求服务器(https协议)
 	 *
 	 * @param url 请求地址
-	 * @throws NoSuchAlgorithmException
-	 * @throws KeyManagementException
-	 * @throws IOException
+	 * @return 返回
+	 * @throws NoSuchAlgorithmException 异常
+	 * @throws KeyManagementException   异常
+	 * @throws IOException              异常
 	 */
 	public static byte[] get(String url)
 			throws NoSuchAlgorithmException, KeyManagementException,
@@ -85,10 +86,10 @@ public class HttpsUtil {
 	 * @param url     请求地址
 	 * @param content 参数
 	 * @param charset 编码
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws KeyManagementException
-	 * @throws IOException
+	 * @return 返回值
+	 * @throws NoSuchAlgorithmException 异常
+	 * @throws KeyManagementException   异常
+	 * @throws IOException              异常
 	 */
 	public static byte[] post(String url, String content, String charset)
 			throws NoSuchAlgorithmException, KeyManagementException,
@@ -125,12 +126,12 @@ public class HttpsUtil {
 	/**
 	 * 上传图片素材到微信
 	 *
-	 * @param url
-	 * @param file
-	 * @return
-	 * @throws NoSuchAlgorithmException
-	 * @throws KeyManagementException
-	 * @throws IOException
+	 * @param url  地址
+	 * @param file 文件
+	 * @return 返回值
+	 * @throws NoSuchAlgorithmException 异常
+	 * @throws KeyManagementException   异常
+	 * @throws IOException              异常
 	 */
 	public static byte[] postUploadPicToWeChat(String url, MultipartFile file)
 			throws NoSuchAlgorithmException, KeyManagementException,

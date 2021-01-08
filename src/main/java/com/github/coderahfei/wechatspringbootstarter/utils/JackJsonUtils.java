@@ -12,9 +12,10 @@ public class JackJsonUtils {
 	/**
 	 * 解析json
 	 *
-	 * @param content
-	 * @param valueType
-	 * @return
+	 * @param content   c
+	 * @param valueType c
+	 * @param <T>       c
+	 * @return f
 	 */
 	public static <T> T fromJson(String content, Class<T> valueType) {
 		if (objectMapper == null) {
@@ -31,8 +32,8 @@ public class JackJsonUtils {
 	/**
 	 * 生成json
 	 *
-	 * @param object
-	 * @return
+	 * @param object 参数
+	 * @return 返回值
 	 */
 	public static String toJson(Object object) {
 		if (objectMapper == null) {

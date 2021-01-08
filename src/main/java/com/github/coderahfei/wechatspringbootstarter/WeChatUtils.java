@@ -39,7 +39,8 @@ public class WeChatUtils {
 	/**
 	 * 根据code获取网页授权的access_token
 	 *
-	 * @param code
+	 * @param code 参数
+	 * @return 返回值
 	 */
 	public static AuthToken getWebAccessToken(String code) {
 		AuthToken authToken = null;
@@ -71,7 +72,8 @@ public class WeChatUtils {
 	/**
 	 * 根据微信网页授权的access_token获取用户的基本信息
 	 *
-	 * @param accessToken
+	 * @param accessToken 参数
+	 * @return 返回值
 	 */
 	public static UserInfoDto getUserInfoByWechatLogin(AuthToken accessToken) {
 		UserInfoDto userInfoDto = null;
@@ -104,7 +106,7 @@ public class WeChatUtils {
 	/**
 	 * 基础支持中的access_token
 	 *
-	 * @author yang
+	 * @return 返回值
 	 */
 	public synchronized static AccessToken getBaseAccessToken() {
 		AccessToken accessToken = null;
@@ -126,7 +128,9 @@ public class WeChatUtils {
 	 * 从微信获取用户列表
 	 * 每次请求最多获取10000条数据
 	 *
-	 * @param openid 第一个拉取的OPENID，不填默认从头开始拉取
+	 * @param openid      第一个拉取的OPENID，不填默认从头开始拉取
+	 * @param accessToken c
+	 * @return f
 	 */
 	public static FindUserListDto findWechatUserList(String openid, String accessToken) {
 		FindUserListDto findUserListDto = new FindUserListDto();
@@ -146,6 +150,9 @@ public class WeChatUtils {
 	
 	/**
 	 * 获取所有的微信用户
+	 *
+	 * @param accessToken 参水
+	 * @return 返回值
 	 */
 	public static List<String> findAllWechatUserList(String accessToken) {
 		int searchTotal = 0;
@@ -173,9 +180,9 @@ public class WeChatUtils {
 	/**
 	 * 获取用户基本信息(UnionID机制)
 	 *
-	 * @param openid
-	 * @param accessToken
-	 * @return
+	 * @param openid      参数
+	 * @param accessToken 获取所有的微信用户
+	 * @return 返回值
 	 */
 	public static UserInfoDto findUserInfoDto(String openid, String accessToken) {
 		UserInfoDto userInfoDto = null;
@@ -190,9 +197,12 @@ public class WeChatUtils {
 		return userInfoDto;
 	}
 	
-	
 	/**
 	 * 批量获取用户信息
+	 *
+	 * @param params      c
+	 * @param accessToken c
+	 * @return f
 	 */
 	public static UserInfoListDto findUserInfoList(String params, String accessToken) {
 		UserInfoListDto userInfoListDto = null;
@@ -213,7 +223,7 @@ public class WeChatUtils {
 	 *
 	 * @param createQrcodeSendData 请求参数
 	 * @param accessToken          基础的accessToken
-	 * @return
+	 * @return f
 	 */
 	public static CreateQrcodeDto createQrcode(CreateQrcodeSendData createQrcodeSendData, String accessToken) {
 		
@@ -238,8 +248,9 @@ public class WeChatUtils {
 	 * 和临时素材
 	 * 和图文消息内容里面的图片
 	 *
-	 * @param url
-	 * @param file
+	 * @param url  c
+	 * @param file c
+	 * @return f
 	 */
 	public static MaterialDto addMaterial(String url, MultipartFile file) {
 		MaterialDto materialDto = null;
@@ -261,6 +272,10 @@ public class WeChatUtils {
 	
 	/**
 	 * 上传图文消息
+	 *
+	 * @param params      c
+	 * @param accessToken c
+	 * @return f
 	 */
 	public static MaterialDto materialAddNews(String params, String accessToken) {
 		MaterialDto materialDto = new MaterialDto();
@@ -278,6 +293,10 @@ public class WeChatUtils {
 	/**
 	 * 创建公众号菜单
 	 * （将本地菜单同步到公众号）
+	 *
+	 * @param params      c
+	 * @param accessToken c
+	 * @return f
 	 */
 	public static Map createMenu(String params, String accessToken) {
 		Map map = new HashMap();
@@ -298,7 +317,9 @@ public class WeChatUtils {
 	/**
 	 * 创建tag
 	 *
-	 * @param tagName tag的name
+	 * @param tagName     c
+	 * @param accessToken c
+	 * @return f
 	 */
 	public static UserTagDto createTag(String tagName, String accessToken) {
 		UserTagDto userTagDto = null;
@@ -317,7 +338,10 @@ public class WeChatUtils {
 	/**
 	 * 更新tag
 	 *
-	 * @param tagName tag的name
+	 * @param wechatTagId c
+	 * @param tagName     c
+	 * @param accessToken c
+	 * @return f
 	 */
 	public static UserTagDto updateTag(int wechatTagId, String tagName, String accessToken) {
 		UserTagDto userTagDto = null;
@@ -335,6 +359,10 @@ public class WeChatUtils {
 	
 	/**
 	 * 批量为用户打标签
+	 *
+	 * @param batchTaggingSendData c
+	 * @param accessToken          c
+	 * @return f
 	 */
 	public static BaseDto batchtagging(BatchTaggingSendData batchTaggingSendData, String accessToken) {
 		BaseDto baseDto = null;
@@ -411,7 +439,8 @@ public class WeChatUtils {
 	/**
 	 * https协议的get请求
 	 *
-	 * @return
+	 * @param urlStr c
+	 * @return f
 	 */
 	public static StringBuilder httpsGet(String urlStr) {
 		StringBuilder json = new StringBuilder();

@@ -11,7 +11,7 @@
     <parent>
         <groupId>org.sonatype.oss</groupId>
         <artifactId>oss-parent</artifactId>
-        <version>7</version>
+        <version>9</version>
     </parent>
 
     <licenses>
@@ -22,8 +22,7 @@
         </license>
     </licenses>
     <scm>
-        <tag>master</tag>
-        <url>git@github.com:coder-Ah-fei/wechat-spring-boot-starter.git</url>
+        <url>https://github.com/coder-Ah-fei/wechat-spring-boot-starter</url>
         <connection>scm:git:git@github.com:coder-Ah-fei/wechat-spring-boot-starter.git</connection>
         <developerConnection>scm:git:git@github.com:coder-Ah-fei/wechat-spring-boot-starter.git</developerConnection>
     </scm>
@@ -31,11 +30,25 @@
         <developer>
             <name>CorderAhfei</name>
             <email>749617822@qq.com</email>
-            <organization>github.com.coder-Ah-fei</organization>
+            <url>https://github.com/coder-Ah-fei</url>
         </developer>
     </developers>
+    <!--仓库地址配置信息-->
+    <!--    <distributionManagement>-->
+    <!--        <snapshotRepository>-->
+    <!--            &lt;!&ndash;id 要与setting.xml server id一致 &ndash;&gt;-->
+    <!--            <id>snapshot</id>-->
+    <!--            <url>https://oss.sonatype.org/content/repositories/snapshots</url>-->
+    <!--        </snapshotRepository>-->
+    <!--        <repository>-->
+    <!--            &lt;!&ndash;id 要与setting.xml server id一致 &ndash;&gt;-->
+    <!--            <id>release</id>-->
+    <!--            <url>https://repo1.maven.org/maven2</url>-->
+    <!--        </repository>-->
+    <!--    </distributionManagement>-->
 
-    <groupId>com.github.coderahfei</groupId>
+
+    <groupId>com.github.coder-Ah-fei</groupId>
     <artifactId>wechat-spring-boot-starter</artifactId>
     <version>0.0.1</version>
     <name>wechat-spring-boot-starter</name>
@@ -113,14 +126,51 @@
 
     <build>
         <plugins>
+            <!--java source生成插件-->
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--java doc生成插件-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--gpg签名插件-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>1.5</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
-
 </project>
