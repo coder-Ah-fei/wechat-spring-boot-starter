@@ -10,15 +10,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,33 +30,6 @@ public class WeChatUtils {
 		WeChatUtils.wechatConfig = wechatConfig;
 	}
 	
-	public static <T> T sendUrl(String urlStr, Class<T> clazz) {
-		StringBuilder json = new StringBuilder();
-		T t = null;
-		try {
-			LOGGER.info("-------------------------------------------------------------------------------------");
-			LOGGER.info("发送请求【" + urlStr + "】");
-			URL url = new URL(urlStr);
-			URLConnection uc = url.openConnection();
-			BufferedReader in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
-				json.append(inputLine);
-			}
-			in.close();
-			LOGGER.info("-------------------------------------------------------------------------------------");
-			LOGGER.info("返回结果【" + json.toString() + "】");
-			//将json字符串转成javaBean
-			ObjectMapper objectMapper = new ObjectMapper();
-			t = objectMapper.readValue(json.toString(), clazz);
-		} catch (Exception e) {
-			LOGGER.error("sendUrl异常");
-			e.printStackTrace();
-		}
-		return t;
-	}
-	
-	
 	/**
 	 * 根据code获取网页授权的access_token
 	 *
@@ -70,7 +38,7 @@ public class WeChatUtils {
 	 */
 	public static AuthToken getWebAccessToken(String code) {
 		String urlStr = wechatConfig.getUrl().getWebAccessToken() + "appid=" + wechatConfig.getConfig().getAppid() + "&secret=" + wechatConfig.getConfig().getAppsecret() + "&code=" + code + "&grant_type=authorization_code";
-		return WeChatUtils.sendUrl(urlStr, AuthToken.class);
+		return HttpsUtil.get(urlStr, AuthToken.class);
 	}
 	
 	/**
@@ -81,7 +49,7 @@ public class WeChatUtils {
 	 */
 	public static UserInfoDto getUserInfoByWechatLogin(AuthToken accessToken) {
 		String urlStr = wechatConfig.getUrl().getUserInfo() + "?access_token=" + accessToken.getAccess_token() + "&openid=" + accessToken.getOpenid();
-		return WeChatUtils.sendUrl(urlStr, UserInfoDto.class);
+		return HttpsUtil.get(urlStr, UserInfoDto.class);
 	}
 	
 	
@@ -92,7 +60,7 @@ public class WeChatUtils {
 	 */
 	public synchronized static AccessToken getBaseAccessToken() {
 		String urlStr = wechatConfig.getUrl().getAccessToken() + "appid=" + wechatConfig.getConfig().getAppid() + "&secret=" + wechatConfig.getConfig().getAppsecret();
-		return WeChatUtils.sendUrl(urlStr, AccessToken.class);
+		return HttpsUtil.get(urlStr, AccessToken.class);
 	}
 	
 	
@@ -109,7 +77,7 @@ public class WeChatUtils {
 			return null;
 		}
 		String urlStr = wechatConfig.getUrl().getUserList() + "access_token=" + accessToken + "&next_openid=" + openid;
-		return WeChatUtils.sendUrl(urlStr, FindUserListDto.class);
+		return HttpsUtil.get(urlStr, FindUserListDto.class);
 	}
 	
 	/**
@@ -149,16 +117,8 @@ public class WeChatUtils {
 	 * @return 返回值
 	 */
 	public static UserInfoDto findUserInfoDto(String openid, String accessToken) {
-		UserInfoDto userInfoDto = null;
 		String url = wechatConfig.getUrl().getUserInfoUnionID() + accessToken + "&openid=" + openid;
-		try {
-			byte[] post = HttpsUtil.post(url, "", "UTF-8");
-			ObjectMapper objectMapper = new ObjectMapper();
-			userInfoDto = objectMapper.readValue(new String(post), UserInfoDto.class);
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
-		}
-		return userInfoDto;
+		return HttpsUtil.post(url, "", UserInfoDto.class);
 	}
 	
 	/**
@@ -169,17 +129,8 @@ public class WeChatUtils {
 	 * @return f
 	 */
 	public static UserInfoListDto findUserInfoList(String params, String accessToken) {
-		UserInfoListDto userInfoListDto = null;
 		String url = wechatConfig.getUrl().getUserInfoBatchget() + accessToken;
-		try {
-			byte[] post = HttpsUtil.post(url, params, "UTF-8");
-			ObjectMapper objectMapper = new ObjectMapper();
-			userInfoListDto = objectMapper.readValue(new String(post), UserInfoListDto.class);
-			return userInfoListDto;
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
-		}
-		return null;
+		return HttpsUtil.post(url, params, UserInfoListDto.class);
 	}
 	
 	/**
@@ -190,20 +141,9 @@ public class WeChatUtils {
 	 * @return f
 	 */
 	public static CreateQrcodeDto createQrcode(CreateQrcodeSendData createQrcodeSendData, String accessToken) {
-		
 		String params = JackJsonUtils.toJson(createQrcodeSendData);
-		
-		CreateQrcodeDto createQrcodeDto = null;
 		String url = wechatConfig.getUrl().getCreateQrcode() + accessToken;
-		try {
-			byte[] post = HttpsUtil.post(url, params, "UTF-8");
-			ObjectMapper objectMapper = new ObjectMapper();
-			createQrcodeDto = objectMapper.readValue(new String(post), CreateQrcodeDto.class);
-			return createQrcodeDto;
-		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
-		}
-		return null;
+		return HttpsUtil.post(url, params, CreateQrcodeDto.class);
 	}
 	
 	
@@ -242,15 +182,8 @@ public class WeChatUtils {
 	 * @return f
 	 */
 	public static MaterialDto materialAddNews(String params, String accessToken) {
-		MaterialDto materialDto = new MaterialDto();
 		String url = wechatConfig.getUrl().getMaterialAddNews() + accessToken;
-		try {
-			byte[] post = HttpsUtil.post(url, params, "UTF-8");
-			ObjectMapper objectMapper = new ObjectMapper();
-			materialDto = objectMapper.readValue(new String(post), MaterialDto.class);
-		} catch (Exception e) {
-		}
-		return materialDto;
+		return HttpsUtil.post(url, params, MaterialDto.class);
 	}
 	
 	
@@ -263,18 +196,8 @@ public class WeChatUtils {
 	 * @return f
 	 */
 	public static Map createMenu(String params, String accessToken) {
-		Map map = new HashMap();
 		String url = wechatConfig.getUrl().getCreateMenu() + accessToken;
-		try {
-			byte[] post = HttpsUtil.post(url, params, "UTF-8");
-			LOGGER.info("增加公众号菜单请求结果：【" + new String(post) + "】");
-			ObjectMapper objectMapper = new ObjectMapper();
-			map = objectMapper.readValue(new String(post), Map.class);
-		} catch (Exception e) {
-			map.put("errcode", 1);
-			map.put("errmsg", "请求异常");
-		}
-		return map;
+		return HttpsUtil.post(url, params, Map.class);
 	}
 	
 	
@@ -286,17 +209,9 @@ public class WeChatUtils {
 	 * @return f
 	 */
 	public static UserTagDto createTag(String tagName, String accessToken) {
-		UserTagDto userTagDto = null;
 		String params = "{\"tag\":{\"name\":\"" + tagName + "\"}} ";
 		String url = wechatConfig.getUrl().getTagsCreate() + accessToken;
-		try {
-			byte[] post = HttpsUtil.post(url, params, "UTF-8");
-			ObjectMapper objectMapper = new ObjectMapper();
-			userTagDto = objectMapper.readValue(new String(post), UserTagDto.class);
-			LOGGER.info("发送和客服消息的请求结果：【" + new String(post) + "】");
-		} catch (Exception e) {
-		}
-		return userTagDto;
+		return HttpsUtil.post(url, params, UserTagDto.class);
 	}
 	
 	/**
@@ -308,17 +223,9 @@ public class WeChatUtils {
 	 * @return f
 	 */
 	public static UserTagDto updateTag(int wechatTagId, String tagName, String accessToken) {
-		UserTagDto userTagDto = null;
 		String params = "{\"tag\":{\"id\":" + wechatTagId + ",\"name\":\"" + tagName + "\"}}";
 		String url = wechatConfig.getUrl().getTagsUpdate() + accessToken;
-		try {
-			byte[] post = HttpsUtil.post(url, params, "UTF-8");
-			ObjectMapper objectMapper = new ObjectMapper();
-			userTagDto = objectMapper.readValue(new String(post), UserTagDto.class);
-			LOGGER.info("请求结果：【" + new String(post) + "】");
-		} catch (Exception e) {
-		}
-		return userTagDto;
+		return HttpsUtil.post(url, params, UserTagDto.class);
 	}
 	
 	/**
@@ -329,18 +236,9 @@ public class WeChatUtils {
 	 * @return f
 	 */
 	public static BaseDto batchtagging(BatchTaggingSendData batchTaggingSendData, String accessToken) {
-		BaseDto baseDto = null;
 		String params = JackJsonUtils.toJson(batchTaggingSendData);
 		String url = wechatConfig.getUrl().getTagsBatchtagging() + accessToken;
-		try {
-			byte[] post = HttpsUtil.post(url, params, "UTF-8");
-			ObjectMapper objectMapper = new ObjectMapper();
-			baseDto = objectMapper.readValue(new String(post), BaseDto.class);
-			LOGGER.info("批量为用户打标签：【" + new String(post) + "】");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return baseDto;
+		return HttpsUtil.post(url, params, BaseDto.class);
 		
 	}
 	
@@ -399,39 +297,6 @@ public class WeChatUtils {
 //	}
 //
 //
-	
-	/**
-	 * https协议的get请求
-	 *
-	 * @param urlStr c
-	 * @return f
-	 */
-	public static StringBuilder httpsGet(String urlStr) {
-		StringBuilder json = new StringBuilder();
-		URL url = null;
-		URLConnection uc = null;
-		BufferedReader in = null;
-		try {
-			url = new URL(urlStr);
-			uc = url.openConnection();
-			in = new BufferedReader(new InputStreamReader(uc.getInputStream()));
-			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
-				json.append(inputLine);
-			}
-		} catch (Exception e) {
-			LOGGER.error("https协议的get请求发生异常");
-			e.printStackTrace();
-		} finally {
-			try {
-				in.close();
-			} catch (Exception e) {
-				LOGGER.error("关闭BufferedReader时发生异常");
-				e.printStackTrace();
-			}
-		}
-		return json;
-	}
 	
 	
 	/**

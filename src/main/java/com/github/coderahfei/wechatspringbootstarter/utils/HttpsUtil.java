@@ -1,5 +1,7 @@
 package com.github.coderahfei.wechatspringbootstarter.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.net.ssl.*;
@@ -10,7 +12,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 /**
@@ -22,13 +23,11 @@ public class HttpsUtil {
 	
 	private static class TrustAnyTrustManager implements X509TrustManager {
 		@Override
-		public void checkClientTrusted(X509Certificate[] chain, String authType)
-				throws CertificateException {
+		public void checkClientTrusted(X509Certificate[] chain, String authType) {
 		}
 		
 		@Override
-		public void checkServerTrusted(X509Certificate[] chain, String authType)
-				throws CertificateException {
+		public void checkServerTrusted(X509Certificate[] chain, String authType) {
 		}
 		
 		@Override
@@ -42,6 +41,35 @@ public class HttpsUtil {
 		public boolean verify(String hostname, SSLSession session) {
 			return true;
 		}
+	}
+	
+	/**
+	 * get方式请求服务器(https协议)
+	 *
+	 * @param url   请求地址
+	 * @param clazz 要得到的对象的类型
+	 * @param <T>   泛型
+	 * @return 得到的对象
+	 */
+	public static <T> T get(String url, Class<T> clazz) {
+		T t = null;
+		byte[] bytes = new byte[0];
+		try {
+			bytes = get(url);
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (KeyManagementException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			t = objectMapper.readValue(new String(bytes), clazz);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return t;
 	}
 	
 	/**
@@ -77,7 +105,7 @@ public class HttpsUtil {
 			is.close();
 			return outStream.toByteArray();
 		}
-		return null;
+		return new byte[0];
 	}
 	
 	/**
@@ -85,7 +113,50 @@ public class HttpsUtil {
 	 *
 	 * @param url     请求地址
 	 * @param content 参数
-	 * @param charset 编码
+	 * @param clazz   要得到的对象的类型
+	 * @param <T>     泛型
+	 * @return 得到的对象
+	 */
+	public static <T> T post(String url, String content, Class<T> clazz) {
+		T t = null;
+		byte[] bytes = post(url, content);
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			t = objectMapper.readValue(new String(bytes), clazz);
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+		}
+		return t;
+	}
+	
+	/**
+	 * post方式请求服务器(https协议)
+	 *
+	 * @param url     请求地址
+	 * @param content 可穿json格式的字符串
+	 * @return 结果
+	 */
+	public static byte[] post(String url, String content) {
+		byte[] bytes = new byte[0];
+		try {
+			bytes = post(url, content, "UTF-8");
+		} catch (NoSuchAlgorithmException e) {
+			e.printStackTrace();
+		} catch (KeyManagementException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return bytes;
+	}
+	
+	
+	/**
+	 * post方式请求服务器(https协议)
+	 *
+	 * @param url     请求地址
+	 * @param content 可串JSON格式的参数
+	 * @param charset 参数的编码方式
 	 * @return 返回值
 	 * @throws NoSuchAlgorithmException 异常
 	 * @throws KeyManagementException   异常
@@ -120,7 +191,7 @@ public class HttpsUtil {
 			is.close();
 			return outStream.toByteArray();
 		}
-		return null;
+		return new byte[0];
 	}
 	
 	/**
