@@ -99,6 +99,20 @@ public class WechatConfig {
 		 */
 		private String tagsBatchtagging = "https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=";
 		
+		/**
+		 * 长连接转短链接
+		 */
+		private String shortUrl = "https://api.weixin.qq.com/cgi-bin/shorturl?access_token=";
+		
+		public String getShortUrl() {
+			return shortUrl;
+		}
+		
+		public Url setShortUrl(String shortUrl) {
+			this.shortUrl = shortUrl;
+			return this;
+		}
+		
 		public String getUserInfoUnionID() {
 			return userInfoUnionID;
 		}

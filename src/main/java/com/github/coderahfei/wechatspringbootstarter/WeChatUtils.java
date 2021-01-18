@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -242,6 +243,23 @@ public class WeChatUtils {
 		
 	}
 	
+	/**
+	 * 长连接转短链接
+	 *
+	 * @param longUrl     需要转换的长链接
+	 * @param accessToken 调用接口凭证
+	 * @return 返回数据
+	 */
+	public static ShortUrlDto shortUrl(String longUrl, String accessToken) {
+		Map<String, Object> paramsMap = new HashMap<>(3);
+		paramsMap.put("long_url", longUrl);
+		// 固定值 代表长链接转短链接
+		paramsMap.put("action", "long2short");
+		String url = wechatConfig.getUrl().getShortUrl() + accessToken;
+		return HttpsUtil.post(url, JackJsonUtils.toJson(paramsMap), ShortUrlDto.class);
+	}
+	
+	
 	public static void sendMaterial(String accessToken) {
 		String params =
 				"{"
@@ -259,8 +277,6 @@ public class WeChatUtils {
 			LOGGER.info("发送和客服消息的请求结果：【" + new String(post) + "】");
 		} catch (Exception e) {
 		}
-		
-		
 	}
 
 //
