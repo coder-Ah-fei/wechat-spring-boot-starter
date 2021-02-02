@@ -1,4 +1,4 @@
-package com.github.coderahfei.wechatspringbootstarter.model;
+package com.github.coderahfei.wechatspringbootstarter.model.form;
 
 /**
  * 生成二维码请求的参数

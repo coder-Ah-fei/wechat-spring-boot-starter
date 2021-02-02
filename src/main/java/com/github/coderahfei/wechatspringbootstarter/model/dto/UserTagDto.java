@@ -1,9 +1,9 @@
-package com.github.coderahfei.wechatspringbootstarter.model;
+package com.github.coderahfei.wechatspringbootstarter.model.dto;
 
 /**
  * @author yang [yiixuan@163.com]
  */
-public class UserTagDto {
+public class UserTagDto extends BaseDto {
 	
 	/**
 	 * tag : {"id":100,"name":"分组1"}
@@ -12,8 +12,6 @@ public class UserTagDto {
 	 */
 	
 	private TagBean tag;
-	private int errcode;
-	private String errmsg;
 	
 	public TagBean getTag() {
 		return tag;
@@ -21,22 +19,6 @@ public class UserTagDto {
 	
 	public void setTag(TagBean tag) {
 		this.tag = tag;
-	}
-	
-	public int getErrcode() {
-		return errcode;
-	}
-	
-	public void setErrcode(int errcode) {
-		this.errcode = errcode;
-	}
-	
-	public String getErrmsg() {
-		return errmsg;
-	}
-	
-	public void setErrmsg(String errmsg) {
-		this.errmsg = errmsg;
 	}
 	
 	public static class TagBean {

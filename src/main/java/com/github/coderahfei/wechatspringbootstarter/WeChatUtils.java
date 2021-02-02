@@ -2,14 +2,21 @@ package com.github.coderahfei.wechatspringbootstarter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.coderahfei.wechatspringbootstarter.config.WechatConfig;
+import com.github.coderahfei.wechatspringbootstarter.exception.AesException;
 import com.github.coderahfei.wechatspringbootstarter.model.*;
+import com.github.coderahfei.wechatspringbootstarter.model.dto.*;
+import com.github.coderahfei.wechatspringbootstarter.model.form.BatchTaggingSendData;
+import com.github.coderahfei.wechatspringbootstarter.model.form.CreateQrcodeSendData;
+import com.github.coderahfei.wechatspringbootstarter.model.form.WechatTemplateMsgSendData;
 import com.github.coderahfei.wechatspringbootstarter.utils.HttpsUtil;
 import com.github.coderahfei.wechatspringbootstarter.utils.JackJsonUtils;
+import com.github.coderahfei.wechatspringbootstarter.utils.security.SHA1;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -257,6 +264,42 @@ public class WeChatUtils {
 		paramsMap.put("action", "long2short");
 		String url = wechatConfig.getUrl().getShortUrl() + accessToken;
 		return HttpsUtil.post(url, JackJsonUtils.toJson(paramsMap), ShortUrlDto.class);
+	}
+	
+	/**
+	 * 校验微信请求，成为开发者(明文模式)
+	 *
+	 * @param request 从request中获取校验用的参数
+	 * @return 校验结果, 校验成功返回 echostr,将echostr返回给微信,校验失败返回空字符串
+	 */
+	public static boolean checkSignature(HttpServletRequest request) {
+		String signature = request.getParameter("signature");
+		String timestamp = request.getParameter("timestamp");
+		String nonce = request.getParameter("nonce");
+		String echostr = request.getParameter("echostr");
+		LOGGER.info("得到参数signature=" + signature);
+		LOGGER.info("得到参数timestamp=" + timestamp);
+		LOGGER.info("得到参数nonce=" + nonce);
+		LOGGER.info("得到参数echostr=" + echostr);
+		String tempStr = "";
+		try {
+			tempStr = SHA1.getSHA1(wechatConfig.getConfig().getToken(), timestamp, nonce, null);
+		} catch (AesException e) {
+			e.printStackTrace();
+		}
+		return tempStr.equals(signature);
+	}
+	
+	/**
+	 * 发送模板消息
+	 *
+	 * @param data        发送模板消息的参数
+	 * @param accessToken 令牌
+	 * @return 发送消息的结果
+	 */
+	public static WechatTemplateMsgDto sendWechatTemplateMsg(WechatTemplateMsgSendData data, String accessToken) {
+		String url = wechatConfig.getUrl().getSendTemplateMsg() + accessToken;
+		return HttpsUtil.post(url, JackJsonUtils.toJson(data), WechatTemplateMsgDto.class);
 	}
 	
 	

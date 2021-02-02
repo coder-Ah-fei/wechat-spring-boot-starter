@@ -1,4 +1,4 @@
-package com.github.coderahfei.wechatspringbootstarter.model;
+package com.github.coderahfei.wechatspringbootstarter.model.dto;
 
 /**
  * 接受生成二维码请求返回的参数

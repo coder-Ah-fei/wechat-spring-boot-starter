@@ -104,6 +104,18 @@ public class WechatConfig {
 		 */
 		private String shortUrl = "https://api.weixin.qq.com/cgi-bin/shorturl?access_token=";
 		
+		
+		private String sendTemplateMsg = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=";
+		
+		public String getSendTemplateMsg() {
+			return sendTemplateMsg;
+		}
+		
+		public Url setSendTemplateMsg(String sendTemplateMsg) {
+			this.sendTemplateMsg = sendTemplateMsg;
+			return this;
+		}
+		
 		public String getShortUrl() {
 			return shortUrl;
 		}
@@ -262,6 +274,19 @@ public class WechatConfig {
 		 */
 		private String appsecret;
 		
+		/**
+		 * 在微信公众号上服务器配置的令牌Token
+		 */
+		private String token;
+		
+		public String getToken() {
+			return token;
+		}
+		
+		public Config setToken(String token) {
+			this.token = token;
+			return this;
+		}
 		
 		public String getAppid() {
 			return appid;

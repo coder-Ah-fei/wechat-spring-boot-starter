@@ -1,4 +1,4 @@
-package com.github.coderahfei.wechatspringbootstarter.model;
+package com.github.coderahfei.wechatspringbootstarter.model.form;
 
 import java.util.List;
 

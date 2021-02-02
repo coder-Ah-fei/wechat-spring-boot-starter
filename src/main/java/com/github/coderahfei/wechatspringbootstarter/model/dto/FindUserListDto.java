@@ -1,4 +1,4 @@
-package com.github.coderahfei.wechatspringbootstarter.model;
+package com.github.coderahfei.wechatspringbootstarter.model.dto;
 
 import java.util.List;
 

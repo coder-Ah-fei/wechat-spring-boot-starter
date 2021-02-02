@@ -1,4 +1,4 @@
-package com.github.coderahfei.wechatspringbootstarter.model;
+package com.github.coderahfei.wechatspringbootstarter.model.dto;
 
 import java.util.List;
 
@@ -7,7 +7,7 @@ import java.util.List;
  *
  * @author yang [yiixuan@163.com]
  */
-public class MaterialDto {
+public class MaterialDto extends BaseDto {
 	
 	
 	/**
@@ -24,8 +24,6 @@ public class MaterialDto {
 	private String introduction;
 	private String media_id;
 	private String url;
-	private int errcode;
-	private String errmsg;
 	private List<?> item;
 	
 	public String getTitle() {
@@ -64,23 +62,6 @@ public class MaterialDto {
 		return this;
 	}
 	
-	public int getErrcode() {
-		return errcode;
-	}
-	
-	public MaterialDto setErrcode(int errcode) {
-		this.errcode = errcode;
-		return this;
-	}
-	
-	public String getErrmsg() {
-		return errmsg;
-	}
-	
-	public MaterialDto setErrmsg(String errmsg) {
-		this.errmsg = errmsg;
-		return this;
-	}
 	
 	public List<?> getItem() {
 		return item;

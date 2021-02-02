@@ -2,6 +2,8 @@ package com.github.coderahfei.wechatspringbootstarter.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.net.ssl.*;
@@ -20,6 +22,8 @@ import java.security.cert.X509Certificate;
  * @author yang [yiixuan@163.com]
  */
 public class HttpsUtil {
+	
+	private static final Logger LOGGER = LoggerFactory.getLogger(HttpsUtil.class);
 	
 	private static class TrustAnyTrustManager implements X509TrustManager {
 		@Override
@@ -65,7 +69,11 @@ public class HttpsUtil {
 		}
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			t = objectMapper.readValue(new String(bytes), clazz);
+			
+			String resultStr = new String(bytes);
+			LOGGER.info("HTTPS-->GET请求地址：【" + url + "】");
+			LOGGER.info("返回结果：【" + resultStr + "】");
+			t = objectMapper.readValue(resultStr, clazz);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
@@ -103,6 +111,7 @@ public class HttpsUtil {
 				outStream.write(buffer, 0, len);
 			}
 			is.close();
+			
 			return outStream.toByteArray();
 		}
 		return new byte[0];
@@ -122,7 +131,10 @@ public class HttpsUtil {
 		byte[] bytes = post(url, content);
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
-			t = objectMapper.readValue(new String(bytes), clazz);
+			String resultStr = new String(bytes);
+			LOGGER.info("HTTPS-->POST请求地址：【" + url + "】请求参数：【" + content + "】");
+			LOGGER.info("返回结果：【" + resultStr + "】");
+			t = objectMapper.readValue(resultStr, clazz);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
